@@ -2,7 +2,6 @@ package com.lucassena.jobapi.controllers;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -18,46 +17,53 @@ import com.lucassena.jobapi.entities.Job;
 import com.lucassena.jobapi.services.JobService;
 
 @RestController
-@RequestMapping(value = "/jobs")
+@RequestMapping("/jobs")
 public class JobController {
 
-    @Autowired
-    private JobService service;
+    private final JobService service;
+
+    public JobController(JobService service) {
+        this.service = service;
+    }
 
     @PostMapping
-    public ResponseEntity<String> create(@RequestBody Job job) {
-        service.create(job);
+    public ResponseEntity<String> createJob(@RequestBody Job job) {
+        service.createJob(job);
         return new ResponseEntity<>("Vaga adicionada com sucesso", HttpStatus.CREATED);
     }
 
     @GetMapping
-    public ResponseEntity<List<Job>> getAll() {
-        return ResponseEntity.ok(service.getAll());
+    public ResponseEntity<List<Job>> getAllJobs() {
+        List<Job> jobs = service.getAllJobs();
+        if (jobs.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return ResponseEntity.ok(jobs);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Job> getById(@PathVariable Long id) {
-        Job job = service.getById(id);
+    public ResponseEntity<Job> getJobById(@PathVariable Long id) {
+        Job job = service.getJobById(id);
         if (job != null) {
-            return new ResponseEntity<>(job, HttpStatus.OK);
+            return ResponseEntity.ok(job);
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<String> update(@PathVariable Long id, @RequestBody Job job) {
-        boolean updated = service.update(id, job);
+    public ResponseEntity<String> updateJob(@PathVariable Long id, @RequestBody Job job) {
+        boolean updated = service.updateJob(id, job);
         if (updated) {
-            return new ResponseEntity<>("Vaga atualizada com sucesso", HttpStatus.OK);
+            return ResponseEntity.ok("Vaga atualizada com sucesso");
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> delete(@PathVariable Long id) {
-        boolean deleted = service.delete(id);
+    public ResponseEntity<String> deleteJob(@PathVariable Long id) {
+        boolean deleted = service.deleteJob(id);
         if (deleted) {
-            return new ResponseEntity<>("Vaga deletada com sucesso", HttpStatus.OK);
+            return ResponseEntity.ok("Vaga deletada com sucesso");
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }

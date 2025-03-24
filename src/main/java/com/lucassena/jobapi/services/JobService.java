@@ -6,13 +6,13 @@ import com.lucassena.jobapi.entities.Job;
 
 public interface JobService {
 
-    Job create(Job job);
+    Job createJob(Job job);
 
-    List<Job> getAll();
+    List<Job> getAllJobs();
 
-    Job getById(Long id);
+    Job getJobById(Long id);
 
-    boolean update(Long id, Job job);
+    boolean updateJob(Long id, Job job);
 
-    boolean delete(Long id);
+    boolean deleteJob(Long id);
 }
