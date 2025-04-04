@@ -31,7 +31,6 @@ public class JobController {
         if (!created) {
             return new ResponseEntity<>("Erro: Empresa inválida ou inexistente.", HttpStatus.BAD_REQUEST);
         }
-
         return new ResponseEntity<>("Vaga adicionada com sucesso", HttpStatus.CREATED);
     }
 
