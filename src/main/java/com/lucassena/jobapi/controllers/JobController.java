@@ -2,6 +2,7 @@ package com.lucassena.jobapi.controllers;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -20,21 +21,23 @@ import com.lucassena.jobapi.services.JobService;
 @RequestMapping("/jobs")
 public class JobController {
 
-    private final JobService service;
-
-    public JobController(JobService service) {
-        this.service = service;
-    }
+    @Autowired
+    private JobService jobService;
 
     @PostMapping
     public ResponseEntity<String> createJob(@RequestBody Job job) {
-        service.createJob(job);
+        boolean created = jobService.createJob(job);
+
+        if (!created) {
+            return new ResponseEntity<>("Erro: Empresa inválida ou inexistente.", HttpStatus.BAD_REQUEST);
+        }
+
         return new ResponseEntity<>("Vaga adicionada com sucesso", HttpStatus.CREATED);
     }
 
     @GetMapping
     public ResponseEntity<List<Job>> getAllJobs() {
-        List<Job> jobs = service.getAllJobs();
+        List<Job> jobs = jobService.getAllJobs();
         if (jobs.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
@@ -43,7 +46,7 @@ public class JobController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Job> getJobById(@PathVariable Long id) {
-        Job job = service.getJobById(id);
+        Job job = jobService.getJobById(id);
         if (job != null) {
             return ResponseEntity.ok(job);
         }
@@ -52,7 +55,7 @@ public class JobController {
 
     @PutMapping("/{id}")
     public ResponseEntity<String> updateJob(@PathVariable Long id, @RequestBody Job job) {
-        boolean updated = service.updateJob(id, job);
+        boolean updated = jobService.updateJob(id, job);
         if (updated) {
             return ResponseEntity.ok("Vaga atualizada com sucesso");
         }
@@ -61,7 +64,7 @@ public class JobController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteJob(@PathVariable Long id) {
-        boolean deleted = service.deleteJob(id);
+        boolean deleted = jobService.deleteJob(id);
         if (deleted) {
             return ResponseEntity.ok("Vaga deletada com sucesso");
         }

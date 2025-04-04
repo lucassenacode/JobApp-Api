@@ -6,7 +6,7 @@ import com.lucassena.jobapi.entities.Job;
 
 public interface JobService {
 
-    Job createJob(Job job);
+    boolean createJob(Job job);
 
     List<Job> getAllJobs();
 

@@ -3,8 +3,6 @@ package com.lucassena.jobapi.services;
 import java.util.List;
 import java.util.Optional;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,11 +19,18 @@ public class JobServiceImpl implements JobService {
     @Autowired
     private CompanyRepository companyRepository;
 
-    private static final Logger logger = LoggerFactory.getLogger(JobServiceImpl.class);
-
     @Override
-    public Job createJob(Job job) {
-        return jobRepository.save(job);
+    public boolean createJob(Job job) {
+        if (job.getCompany() == null || job.getCompany().getId() == null) {
+            return false;
+        }
+
+        if (!companyRepository.existsById(job.getCompany().getId())) {
+            return false;
+        }
+
+        jobRepository.save(job);
+        return true;
     }
 
     @Override
@@ -52,7 +57,6 @@ public class JobServiceImpl implements JobService {
 
         updateJobAttributes(jobOptional.get(), job);
         jobRepository.save(jobOptional.get());
-        logger.debug("Job with ID: {} updated successfully", id);
         return true;
     }
 
@@ -68,13 +72,11 @@ public class JobServiceImpl implements JobService {
 
     @Override
     public boolean deleteJob(Long id) {
-        logger.debug("Deleting job with ID: {}", id);
         if (!jobRepository.existsById(id)) {
-            logger.warn("Job with ID: {} not found", id);
+
             return false;
         }
         jobRepository.deleteById(id);
-        logger.debug("Job with ID: {} deleted successfully", id);
         return true;
     }
 }

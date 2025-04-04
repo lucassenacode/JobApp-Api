@@ -2,7 +2,7 @@ package com.lucassena.jobapi.entities;
 
 import java.math.BigDecimal;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -15,8 +15,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Data
 @Entity
 @Table(name = "jobs")
@@ -32,7 +32,7 @@ public class Job {
     private BigDecimal maxSalary;
     private String location;
 
-    @JsonIgnoreProperties("jobs")
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "company_id")
     private Company company;

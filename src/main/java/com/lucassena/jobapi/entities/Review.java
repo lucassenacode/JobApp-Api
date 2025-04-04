@@ -1,33 +1,34 @@
 package com.lucassena.jobapi.entities;
 
-import java.util.List;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Data
 @Entity
-@Table(name = "companies")
-public class Company {
+@Table(name = "reviews")
+public class Review {
+
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
-  private String name;
+  private String title;
   private String description;
+  private Double rating;
 
-  @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
-  private List<Job> jobs;
-
-  @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
-  private List<Review> reviews;
+  @JsonBackReference
+  @ManyToOne
+  @JoinColumn(name = "company_id")
+  private Company company;
 }

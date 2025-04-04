@@ -13,21 +13,21 @@ import com.lucassena.jobapi.repositories.CompanyRepository;
 public class CompanyServiceImpl implements CompanyService {
 
     @Autowired
-    private CompanyRepository repository;
+    private CompanyRepository companyRepository;
 
     @Override
     public Company createCompany(Company company) {
-        return repository.save(company);
+        return companyRepository.save(company);
     }
 
     @Override
     public List<Company> getAllCompanies() {
-        return repository.findAll();
+        return companyRepository.findAll();
     }
 
     @Override
     public Company getCompanyById(Long id) {
-        Optional<Company> companyOptional = repository.findById(id);
+        Optional<Company> companyOptional = companyRepository.findById(id);
         if (companyOptional.isEmpty()) {
             return null;
         }
@@ -36,12 +36,12 @@ public class CompanyServiceImpl implements CompanyService {
 
     @Override
     public boolean updateCompany(Long id, Company company) {
-        Optional<Company> companyOptional = repository.findById(id);
+        Optional<Company> companyOptional = companyRepository.findById(id);
         if (companyOptional.isEmpty()) {
             return false;
         }
         updateCompanyAttributes(companyOptional.get(), company);
-        repository.save(companyOptional.get());
+        companyRepository.save(companyOptional.get());
         return true;
     }
 
@@ -57,10 +57,10 @@ public class CompanyServiceImpl implements CompanyService {
 
     @Override
     public boolean deleteCompany(Long id) {
-        if (!repository.existsById(id)) {
+        if (!companyRepository.existsById(id)) {
             return false;
         }
-        repository.deleteById(id);
+        companyRepository.deleteById(id);
         return true;
     }
 
